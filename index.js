@@ -12,7 +12,11 @@ const path = require('path');
 // FOR DECODING URL
 app.use(express.urlencoded());
 
-// USING EJS AS TEMPLE ENGINE
+// CREATE TO THE DATABASE
+const db = require('./config/mongoose');
+
+
+// USING EJS AS TEMPLE ENGINE 
 app.set('view engine', 'ejs');
 
 // SET THE PATH OF VIEWS DIRECTORY
@@ -24,6 +28,10 @@ app.get('/', function (req, res) {
     res.locals = {variable:"Ajay Rathore"}
     res.render('home', res.locals)
 });
+
+
+
+
 
 
 
