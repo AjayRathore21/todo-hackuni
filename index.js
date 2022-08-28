@@ -15,6 +15,9 @@ app.use(express.urlencoded());
 // CREATE TO THE DATABASE
 const db = require('./config/mongoose');
 
+// IMPORT TODO OBJECT FROM THE MODEL
+
+const Todo = require('./models/todo');
 
 // USING EJS AS TEMPLE ENGINE 
 app.set('view engine', 'ejs');
