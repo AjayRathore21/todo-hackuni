@@ -22,20 +22,84 @@ const Todo = require('./models/todo');
 // USING EJS AS TEMPLE ENGINE 
 app.set('view engine', 'ejs');
 
+
+
 // SET THE PATH OF VIEWS DIRECTORY
 app.set('views', path.join(__dirname, 'views'));
 
 
+// USE THE CSS AND JAVASCRIPT FILE
+app.use(express.static('assets'));
+
+
+
 // THIS IS HOME PAGE URL
 app.get('/', function (req, res) {
-    res.locals = {variable:"Ajay Rathore"}
-    res.render('home', res.locals)
+    Todo.find({}, function (err, todos) {
+        if (err) {
+            console.log('error', err);
+            return;
+        }
+        return res.render('home',
+            {
+                title: "TODO APP",
+                todo_list: todos
+            }
+        );
+    });
 });
 
+// THIS IS URL FOR CREATING THE TASK IN DATABASE
+app.post('/create-todo', function (req, res) {
+    Todo.create({
+        description: req.body.description,
+        category: req.body.category,
+        date: req.body.date
+    }, function (err, newtodo) {
+        if (err) {
+            console.log('error in creating task', err);
+            return;
+        }
+        return res.redirect('back');
+    }
+    )
+});
 
+// THIS IS DELETE URL FOR SINGLE TASK FROM DATABASE
+app.get('/delete_todo_single', function (req, res) {
+    let id = req.query.id;
+    Todo.findByIdAndDelete(id, function (err) {
+        if (err) {
+            console.log("error");
+            return;
+        }
+        return res.redirect('back');
+    });
+});
 
-
-
+// THIS IS URL TO DELETE THE MULTIPLE ITEM FROM DATABASE
+app.post('/delete-todo', function (req, res) {
+    let ids = req.body.task;
+    // if single task is to be deleted
+    if (typeof (ids) == "string") {
+        Todo.findByIdAndDelete(ids, function (err) {
+            if (err) {
+                console.log("error in deleting");
+                return;
+            }
+        });
+    } else {    // if multiple task is to be deleted
+        for (let i = 0; i < ids.length; i++) {
+            Todo.findByIdAndDelete(ids[i], function (err) {
+                if (err) {
+                    console.log("error in deleting");
+                    return;
+                }
+            });
+        }
+    }
+    return res.redirect('back');
+});
 
 
 
